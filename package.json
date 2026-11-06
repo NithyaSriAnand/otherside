@@ -1,0 +1,1 @@
+{"name":"no-crumbs","version":"1.0.0","private":true,"description":"Offline-first campus food ecosystem","license":"MIT","scripts":{"start":"node server/server.js","test":"node --test server/test.js","adduser":"node server/adduser.js"},"engines":{"node":">=18"}}

@@ -20,7 +20,23 @@ An offline-first campus food ecosystem: students pre-order meals, staff run the 
 
 These are demo credentials stored in client-side code. Do not reuse them anywhere real.
 
-## Run locally
+## Run with the backend (recommended for the event)
+Needs only **Node.js 18+**. No `npm install`, no internet.
+```bash
+npm start            # or: node server/server.js
+```
+Open the printed address. Phones on the same Wi-Fi can use the `http://<laptop-ip>:3000` address, so students and staff on different devices share orders live.
+```bash
+npm test                                   # 6 automated API tests
+node server/adduser.js ID PASSWORD staff   # add an account (8+ char password)
+```
+Data is stored in `server/data/` (JSON files plus an `audit.log` of logins and order changes). Delete that folder to reset.
+
+**Backend features:** hashed passwords (scrypt), session tokens, login lockout after 5 failures, role checks on every route, server-side price calculation and menu validation, order state machine (staff advance one step at a time, students cancel only before cooking), the allergy decision gate enforced on the server (Constraint 12), live updates over Server-Sent Events, security headers that block every external resource (Constraint 1), and path-traversal protection.
+
+**No backend?** The site still works on its own (local mode), which is what GitHub Pages serves.
+
+## Run without the backend
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
@@ -45,6 +61,7 @@ Orders, passports and the forecast model live in the browser (`localStorage`). S
 
 ## Project structure
 ```
+server/      zero-dependency Node backend (server.js, menu.json, adduser.js, test.js)
 index.html   login + student ordering
 staff.html   staff dashboard (tabs)
 orders.html  order tracker / manager
@@ -58,7 +75,7 @@ assets/img/        optional dish photos named <id>.jpg
 ```
 
 ## Honest limits
-Front-end demo only: roles are not secure, data is per browser, the forecast starts from sample history, the plate scanner is a colour-based estimate that needs calibration, and CO2 and rupee figures are illustrative.
+With the backend: roles and prices are enforced on the server, but traffic is plain HTTP (fine on a private canteen network; put it behind HTTPS before any public use) and the demo accounts keep their default passwords until you change them. In local/GitHub Pages mode: roles are not secure, data is per browser, the forecast starts from sample history, the plate scanner is a colour-based estimate that needs calibration, and CO2 and rupee figures are illustrative.
 
 ## Roadmap
-Own-network backend (LAN server) for multi-device sync, real dish photos, QR scanning at pickup, printable kitchen tickets, trained vision model, accessibility audit.
+Database upgrade (SQLite) if volumes grow, real dish photos, QR scanning at pickup, printable kitchen tickets, trained vision model, accessibility audit.
